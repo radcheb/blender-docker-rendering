@@ -32,16 +32,13 @@ centerx = 0.0
 # USE GPU
 scene = bpy.context.scene
 scene.cycles.device = 'GPU'
-prefs = bpy.context.user_preferences
+prefs = bpy.context.preferences
 cprefs = prefs.addons['cycles'].preferences
-
-# Attempt to set GPU device types if available
-for compute_device_type in ('CUDA', 'OPENCL', 'NONE'):
-    try:
-        cprefs.compute_device_type = compute_device_type
-        break
-    except TypeError:
-        pass
+cprefs.compute_device_type = 'CUDA'
+print(bpy.context.preferences.addons['cycles'].preferences.get_devices())
+assert len(bpy.context.preferences.addons['cycles'].preferences.devices) > 0, "no device found"
+cprefs.devices[0].use = True
+scene.cycles.device = 'GPU'
 
 # Enable all CPU and GPU devices
 for device in cprefs.devices:
